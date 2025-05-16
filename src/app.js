@@ -1,22 +1,15 @@
+
  const express = require('express');
-
+ 
+const {adminAuth, userAuth} = require('./middlewares/auth.js');
  const app = express();
-// Request Handler Listening to the request
 
-app.get("/home",(req,res) => {
-    console.log('Request received');
-    res.send('Hello!');
+app.use("/admin",adminAuth);
+app.get
+('/admin/allData', (req, res) => {
+    res.send('Hello, Admin!');
 });
 
-app.post("/home",(req,res) => {
-    console.log('Data received');
-    res.send('Hello Duniya!');
-});
-
-app.use("/test",(req,res) => {
-    console.log('Request received');
-    res.send('Hello, World Kya baat hai Helloo!');
-});
 
  app.listen(3000, () => {
    console.log('Server is running on port 3000');
