@@ -11,6 +11,17 @@
     await user.save();
     res.send("User created successfully");
  })
+
+ // Suppose we need to find from the database
+ app.get('/user',async (req,res) => {
+  const email = req.body.emailId;
+  const users = await User.find({});
+  if (users.length > 0) {
+    res.send(users);
+  } else {
+    res.status(404).send("User not found");
+  }
+ })
 connectdb().then(() => {
     console.log("Database connected successfully");
     app.listen(3000, () => {
