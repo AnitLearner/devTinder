@@ -5,9 +5,16 @@
  const User = require('./models/user');
  const {validateSignUpData} = require('./utils/validation');
  const bcrypt = require('bcrypt');
+ const cookieParser = require('cookie-parser');
+ const {userAuth} = require('./middlewares/auth');
+ const jwt = require('jsonwebtoken');
+
  app.use(express.json());
+ app.use(cookieParser());
+
+  // Middleware for authentication
  // Need to creat the login api
-  app.post('/login', async (req, res) => {
+  app.post('/login', async (req, res)  => {
     const { emailId, password } = req.body;
     const user = await User.findOne({ emailId });
     if (!user) {
@@ -17,7 +24,10 @@
     if (!isMatch) {
       return res.status(401).send("Invalid password");
     }
-    res.send("Login successful");
+    else{
+      res.send("Login successful");
+    }
+    
   });
  app.post('/signup', async(req,res) => {
   validateSignUpData(req);
@@ -40,7 +50,7 @@
 }
 )
  // Suppose we need to find from the database
- app.get('/user',async (req,res) => {
+ app.get('/user',userAuth,async (req,res) => {
   const email = req.body.emailId;
   const users = await User.find({});
   if (users.length > 0) {
