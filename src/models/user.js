@@ -21,5 +21,25 @@ const userSchema = new mongoose.Schema({
     }
 
 });
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+// Create a model from the schema
+userSchema.methods.getJWT = async function () {
+    const user = this;
+   const token = await jwt.sign({ _id: this._id }, "DEV_TINDER",{ expiresIn : '7d'});
+    return token;
+}
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  const user = this;
+  const passwordHash = user.password;
+
+  const isPasswordValid = await bcrypt.compare(
+    passwordInputByUser,
+    passwordHash
+  );
+
+  return isPasswordValid;
+};
 const User = mongoose.model('User', userSchema);
 module.exports = User;

@@ -1,35 +1,42 @@
-// const adminAuth = (req,res,next) => {
-//     console.log("Admin Auth is getting checked");
-//     const token = "xyza";
-//     const authtoken = token === 'xyz';
-//     if (!authtoken) {
-//         console.log("Admin Auth failed");
-//         res.status(401).send("Unauthorized");
+const adminAuth = (req,res,next) => {
+    console.log("Admin Auth is getting checked");
+    const token = "xyza";
+    const authtoken = token === 'xyz';
+    if (!authtoken) {
+        console.log("Admin Auth failed");
+        res.status(401).send("Unauthorized");
+    }
+    else {
+       next();
+    }
+}
+// const userAuth = async (req, res, next) => {
+//   try {
+//     const { token } = req.cookies;
+//     if (!token) {
+//       return res.status(401).send("Please Login!");
 //     }
-//     else {
-//        next();
+
+//     const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
+
+//     const { _id } = decodedObj;
+
+//     const user = await User.findById(_id);
+//     if (!user) {
+//       throw new Error("User not found");
 //     }
-// }
-// const userAuth = (req,res,next) => {
-//     console.log("User Auth is getting checked");
-//     const token = 'abc';
-//     const usertoken = token === 'abc';
-//     if (!usertoken) {
-//         console.log("User Auth failed");
-//         res.status(401).send("Unauthorized");
-//     }
-//     else {
-//        next();
-//     }
-// }
-// module.exports = {
-//     adminAuth,
-//     userAuth
-// }
+
+//     req.user = user;
+//     next();
+//   } catch (err) {
+//     res.status(400).send("ERROR: " + err.message);
+//   }
+// };
+
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const auth = async (req,res,next) => {
+const userAuth = async (req,res,next) => {
     // Read the token from req
     // Validate it
     // Find the user 
@@ -44,9 +51,15 @@ const auth = async (req,res,next) => {
     if(!user){
         return res.status(401).send("User not found");
     }
+    req.user = user;
     next();
 }
 catch(err){
     res.status(400).send("Error: " + err.message);
 }
+}
+module.exports = {
+    adminAuth,
+    userAuth,
+  
 }
